@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KSSS Math Quiz Competition</title>
+  <meta property="og:title"       content="KSSS Math Quiz Competition — Live Scores & Schedules">
+  <meta property="og:description" content="Follow the official live bracket and results for the Kotu Senior Secondary School Mathematics Quiz Competition.">
+  <meta property="og:image"       content="https://ksss-mtc.github.io/KSSS_MATH_QUIZ_COMPETITION/static/images/quiz-preview.jpg">
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://ksss-mtc.github.io/KSSS_MATH_QUIZ_COMPETITION/user/">
+  <link rel="icon" type="image/png" href="../static/images/Kotu-sss_logo.png">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <img
+          src="../static/images/Kotu-sss_logo.png"
+          alt="KSSS Logo"
+          class="brand-logo"
+          loading="lazy"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="brand-logo-fallback" style="display:none;">KSSS</div>
+        <span class="brand-name">KOTU SENIOR SECONDARY SCHOOL</span>
+      </div>
+      <div class="header-actions">
+        <button class="theme-btn" id="theme-toggle" aria-label="Toggle dark mode">
+          <span id="theme-icon">🌙</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Mathematics Department Quiz Competition</h1>
+    <p>Igniting Excellence through Numbers</p>
+  </section>
+
+  <!-- Nav Tabs -->
+  <nav class="tab-nav" aria-label="Site navigation">
+    <ul class="tab-list">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="bracket.html?grade=10" data-grade="10">Grade 10</a></li>
+      <li><a href="bracket.html?grade=11" data-grade="11">Grade 11</a></li>
+      <li><a href="bracket.html?grade=12" data-grade="12">Grade 12</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- Rules & Scoring -->
+    <div class="info-grid">
+      <div class="info-card">
+        <h2>General Rules & Conduct</h2>
+        <ul class="rules-list">
+          <li>Each class sends <strong>ONLY TWO</strong> participants.</li>
+          <li>All participants must wear <strong>school uniforms</strong>.</li>
+          <li><strong>No communication</strong> with the audience — failure results in a <strong>5-point deduction</strong>.</li>
+          <li>Only <strong>simple calculators</strong> permitted (no FX/Scientific).</li>
+          <li>Participants must arrive by <strong>11:18 AM</strong> for an 11:20 AM start.</li>
+        </ul>
+      </div>
+
+      <div class="info-card">
+        <h2>Scoring System</h2>
+        <div class="scoring-row">
+          <span>1st Attempt (2 mins)</span>
+          <span class="score-pts">+5 Points</span>
+        </div>
+        <div class="scoring-row">
+          <span>2nd Attempt (2 mins)</span>
+          <span class="score-pts">+3 Points</span>
+        </div>
+        <div class="scoring-row">
+          <span>Bonus (Passed Question)</span>
+          <span class="score-pts">+2 Points</span>
+        </div>
+        <p class="score-note">Opponents have 45 seconds to answer a passed question.</p>
+      </div>
+    </div>
+
+    <!-- Match Center -->
+    <div class="section-head">
+      <h2>🚀 Match Center</h2>
+      <p>Upcoming &amp; Recent Battles</p>
+    </div>
+
+    <div id="matches-container"></div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>
+      © 2026 KSSS Maths &amp; Tech Club. All rights reserved. |
+      <a href="https://ksss-mtc.github.io/MTC--website" target="_blank" rel="noopener">Official Website</a>
+    </p>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

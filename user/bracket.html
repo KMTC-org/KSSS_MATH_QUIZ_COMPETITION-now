@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Quiz Bracket — KSSS</title>
+  <link rel="icon" type="image/png" href="../static/images/Kotu-sss_logo.png">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <img
+          src="../static/images/Kotu-sss_logo.png"
+          alt="KSSS Logo"
+          class="brand-logo"
+          loading="lazy"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="brand-logo-fallback" style="display:none;">KSSS</div>
+        <span class="brand-name">KOTU SENIOR SECONDARY SCHOOL</span>
+      </div>
+      <div class="header-actions">
+        <button class="theme-btn" id="theme-toggle" aria-label="Toggle dark mode">
+          <span id="theme-icon">🌙</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Nav Tabs (grade links — active state set by app.js) -->
+  <nav class="tab-nav" aria-label="Grade navigation">
+    <ul class="tab-list">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="bracket.html?grade=10" data-grade="10">Grade 10</a></li>
+      <li><a href="bracket.html?grade=11" data-grade="11">Grade 11</a></li>
+      <li><a href="bracket.html?grade=12" data-grade="12">Grade 12</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <a href="index.html" class="back-btn">← Back to Home</a>
+
+    <h1 id="page-title" style="font-size:1.2rem;font-weight:800;color:var(--text);margin-bottom:20px;">
+      Math Quiz Competition
+    </h1>
+
+    <div id="bracket-container"></div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>
+      © 2026 KSSS Maths &amp; Tech Club. All rights reserved. |
+      <a href="https://ksss-mtc.github.io/MTC--website" target="_blank" rel="noopener">Official Website</a>
+    </p>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

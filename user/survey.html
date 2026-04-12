@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Welcome — KSSS Maths & Tech Club</title>
+  <link rel="icon" type="image/png" href="../static/images/Kotu-sss_logo.png">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+  <div class="survey-wrap">
+
+    <!-- Survey Header -->
+    <div class="survey-header">
+      <h1>👋 Welcome to KSSS MTC</h1>
+      <p>Before you continue, please answer a few quick questions to help us understand our community.</p>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+      <p class="progress-label" id="progress-label">Question 1 of 7</p>
+    </div>
+
+    <!-- Survey Form -->
+    <div class="survey-body" id="survey-form">
+      <div class="question-card">
+        <p class="question-number" id="question-number">Question 1</p>
+        <p class="question-text"  id="question-text"></p>
+        <div class="options-list" id="options-list"></div>
+      </div>
+
+      <div class="survey-nav">
+        <button class="btn-prev" id="btn-prev" type="button" style="display:none;">← Back</button>
+        <button class="btn-next" id="btn-next" type="button" disabled>Next →</button>
+      </div>
+    </div>
+
+    <!-- Submitting state (hidden until submit) -->
+    <div class="survey-body survey-submitting" id="survey-submitting" style="display:none;">
+      <div class="spinner"></div>
+      <p>Saving your response…</p>
+      <p style="margin-top:8px;font-size:0.85rem;color:var(--muted);">You will be redirected shortly.</p>
+    </div>
+
+  </div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
