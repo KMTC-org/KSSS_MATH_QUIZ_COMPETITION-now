@@ -8,7 +8,7 @@
 
 // ── Config ──────────────────────────────────────────────────
 const VERSION         = "2.2.5";
-const DATA_PATH       = "../data/";          // relative to user/ folder
+const DATA_PATH       = "data/";             // Root-relative
 const MAX_FUTURE      = 3;
 const MAX_PAST        = 3;
 const MAX_TOTAL       = 6;
