@@ -1,0 +1,36 @@
+const DEFAULT_CONFIG = {
+    owner: "KSSS-MTC",
+    repo: "KSSS_MATH_QUIZ_COMPETITION"
+};
+
+function resolveRepositoryConfig() {
+    const params = new URLSearchParams(window.location.search);
+    const ownerFromQuery = (params.get("owner") || "").trim();
+    const repoFromQuery = (params.get("repo") || "").trim();
+
+    let ownerFromStorage = "";
+    let repoFromStorage = "";
+
+    try {
+        ownerFromStorage = (localStorage.getItem("ksss_repo_owner") || "").trim();
+        repoFromStorage = (localStorage.getItem("ksss_repo_name") || "").trim();
+        if (ownerFromQuery && repoFromQuery) {
+            localStorage.setItem("ksss_repo_owner", ownerFromQuery);
+            localStorage.setItem("ksss_repo_name", repoFromQuery);
+        }
+    } catch (e) { /* ignore */ }
+
+    return {
+        owner: ownerFromQuery || ownerFromStorage || DEFAULT_CONFIG.owner,
+        repo: repoFromQuery || repoFromStorage || DEFAULT_CONFIG.repo
+    };
+}
+
+const repositoryConfig = resolveRepositoryConfig();
+
+export const CONFIG = {
+    owner: repositoryConfig.owner,
+    repo: repositoryConfig.repo,
+    version: "2.2.5",
+    debug: false
+};

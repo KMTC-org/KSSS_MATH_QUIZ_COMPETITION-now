@@ -1,0 +1,227 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KSSS Maths Quiz Admin Dashboard</title>
+    <link rel="icon" type="image/png" href="../static/images/Kotu-sss_logo.png">
+    <link rel="stylesheet" href="src/styles/main.css">
+</head>
+
+<body>
+    <div id="status-msg" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <div class="admin-container">
+        <!-- HEADER SECTION -->
+        <div class="header-card">
+            <div class="admin-status">
+                <div class="brand-wrap">
+                    <img src="../static/images/Kotu-sss_logo.png" alt="KSSS Logo" class="brand-logo"
+                        onerror="console.warn('⚠️ Logo missing: Place Kotusss_logo.png in static/images/ folder'); this.style.display='none'; const fallback=this.nextElementSibling; if(fallback) fallback.style.display='flex';">
+                    <div class="brand-fallback">KSSS</div>
+                    <div class="brand-title">
+                        <span style="font-size: 28px;">🎯</span>
+                        <span>KSSS Tournament Control Center</span>
+                    </div>
+                </div>
+                <div class="status-actions">
+                    <span id="role-badge" class="system-badge"
+                        style="background: #64748b; color: #fff; display: none;">Admin</span>
+                    <button onclick="KSSS_UI_HOOKS.showStructuralActionLog()"
+                        style="background:#0d47a1;color:#fff;padding:7px 14px;border-radius:16px;font-size:12px;border:none;cursor:pointer;"
+                        title="View structural action log" aria-label="View structural action log">📝 Log</button>
+                    <button class="theme-toggle" onclick="window.toggleDarkMode()"
+                        title="Toggle between dark and light theme" aria-label="Toggle between dark and light theme">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                    <div class="system-badge">v2.2.5</div>
+                </div>
+            </div>
+            <div id="admin-display" style="color: var(--text-muted); font-size: 14px; font-weight: normal;">
+                Please authenticate to access tournament management
+            </div>
+
+            <!-- LOGIN SECTION -->
+            <div id="login-section">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+                    <div class="input-group">
+                        <label for="admin-name">🔐 Admin Access</label>
+                        <select id="admin-name" aria-label="Select your admin name">
+                            <option value="">-- Select Your Name --</option>
+                            <option value="Coordinator">Coordinator</option>
+                            <option value="Pico Jr">Pico Jr</option>
+                            <option value="Y-JAMMEH">Y-JAMMEH</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="gh-token">🔑 GitHub Token</label>
+                        <input type="password" id="gh-token" placeholder="Paste github_pat_... token"
+                            aria-label="Enter GitHub personal access token">
+                    </div>
+                </div>
+                <button id="login-btn" onclick="KSSS_UI_HOOKS.login()" style="margin-top: 10px;"
+                    aria-label="Login to access admin control center">🚀 Access Control Center</button>
+            </div>
+
+            <!-- GRADE SELECTION -->
+            <div id="grade-section" class="hidden">
+                <div class="input-group" style="margin-top: 20px;">
+                    <label for="grade-select">📊 Competition Category</label>
+                    <select id="grade-select" aria-label="Select grade level for tournament">
+                        <option value="10">Grade 10 Brackets</option>
+                        <option value="11">Grade 11 Brackets</option>
+                        <option value="12">Grade 12 Brackets</option>
+                    </select>
+                </div>
+                <button id="load-btn" onclick="KSSS_UI_HOOKS.loadMatches()" title="Loads from cache if available (< 5 min old)"
+                    aria-label="Fetch and edit tournament brackets">📥 Fetch & Edit Brackets</button>
+            </div>
+        </div>
+
+        <!-- LOADING OVERLAY -->
+        <div id="loading-overlay" class="hidden">
+            <div class="spinner"></div>
+            <p class="loading-text">Connecting to GitHub Repository...</p>
+        </div>
+
+        <!-- DASHBOARD LAYOUT -->
+        <div id="editor-section" class="hidden">
+            <!-- Mobile Sidebar Toggle Button -->
+            <button class="sidebar-toggle" onclick="window.toggleSidebar()" aria-label="Toggle Sidebar">
+                <div class="hamburger-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </button>
+
+            <!-- Sidebar Overlay for Mobile -->
+            <div class="sidebar-overlay" onclick="window.toggleSidebar()"></div>
+
+            <div class="dashboard-grid">
+                <!-- SIDEBAR - Tournament Overview -->
+                <aside class="sidebar" id="tournament-sidebar" role="complementary"
+                    aria-label="Tournament statistics and overview">
+                    <h3>📊 Tournament Overview</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">Grade Level</span>
+                        <span class="stat-value" id="sidebar-grade" aria-live="polite">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Rounds</span>
+                        <span class="stat-value" id="sidebar-rounds" aria-live="polite">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Active Matches</span>
+                        <span class="stat-value" id="sidebar-matches" aria-live="polite">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Completed</span>
+                        <span class="stat-value" id="sidebar-completed" aria-live="polite">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Qualified Teams</span>
+                        <span class="stat-value" id="sidebar-qualified" aria-live="polite">--</span>
+                    </div>
+
+                    <div style="margin-top: 25px; padding-top: 20px; border-top: 2px solid var(--border-color);">
+                        <h3 style="font-size: 15px; margin-bottom: 12px;">🎮 Quick Actions</h3>
+                        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+                            <p style="margin: 8px 0;">• Complete all matches in current round</p>
+                            <p style="margin: 8px 0;">• Create Best Loser playoff (if odd winners)</p>
+                            <p style="margin: 8px 0;">• Generate next round with manual pairing</p>
+                            <p style="margin: 8px 0;">• Save changes to GitHub</p>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- MAIN CONTENT -->
+                <main class="main-content">
+                    <div class="content-header">
+                        <h2 class="content-title">📋 Match Management</h2>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button id="undo-btn" onclick="KSSS_UI_HOOKS.undoChange()" disabled
+                                style="width: auto; padding: 10px 20px; font-size: 14px;"
+                                title="Undo last change (Ctrl+Z)" aria-label="Undo last change">
+                                ↩️ Undo
+                            </button>
+                            <button id="redo-btn" onclick="KSSS_UI_HOOKS.redoChange()" disabled
+                                style="width: auto; padding: 10px 20px; font-size: 14px;"
+                                title="Redo last undone change (Ctrl+Y)" aria-label="Redo last undone change">
+                                ↪️ Redo
+                            </button>
+                            <button onclick="KSSS_UI_HOOKS.exportToCSV()"
+                                style="width: auto; padding: 10px 20px; font-size: 14px; background: #16a34a;"
+                                title="Export tournament data as CSV file (Ctrl+E)"
+                                aria-label="Export tournament data as CSV">
+                                📊 Export CSV
+                            </button>
+                            <button onclick="KSSS_UI_HOOKS.exportToPDF()"
+                                style="width: auto; padding: 10px 20px; font-size: 14px; background: #dc2626;"
+                                title="Generate PDF report of tournament (Ctrl+P)" aria-label="Generate PDF report">
+                                📄 Export PDF
+                            </button>
+                            <button onclick="KSSS_UI_HOOKS.loadMatches(true)"
+                                style="width: auto; padding: 10px 20px; font-size: 14px;"
+                                title="Force refresh from GitHub (bypasses cache)"
+                                aria-label="Force refresh data from GitHub">
+                                🔄 Force Refresh
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SEARCH & FILTER CONTROLS -->
+                    <div class="search-filter-bar" role="search" aria-label="Match search and filter controls">
+                        <div class="search-box">
+                            <input type="text" id="match-search" placeholder="🔍 Search by team name..."
+                                oninput="KSSS_UI_HOOKS.filterMatches()"
+                                style="margin: 0; font-size: 14px; padding: 10px 14px;"
+                                aria-label="Search matches by team name" />
+                        </div>
+                        <div class="filter-controls">
+                            <select id="status-filter" onchange="KSSS_UI_HOOKS.filterMatches()"
+                                style="margin: 0; font-size: 14px; padding: 10px 14px;"
+                                aria-label="Filter matches by status">
+                                <option value="all">All Statuses</option>
+                                <option value="pending">⏳ Pending</option>
+                                <option value="in-progress">🔵 In Progress</option>
+                                <option value="completed">✅ Completed</option>
+                                <option value="locked">🔒 Locked</option>
+                            </select>
+                            <select id="round-filter" onchange="KSSS_UI_HOOKS.filterMatches()"
+                                style="margin: 0; font-size: 14px; padding: 10px 14px;"
+                                aria-label="Filter matches by round">
+                                <option value="all">All Rounds</option>
+                            </select>
+                            <button onclick="KSSS_UI_HOOKS.clearFilters()"
+                                style="width: auto; padding: 10px 20px; font-size: 14px; background: #6b7280;"
+                                aria-label="Clear all filters">
+                                ✖ Clear
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="matches-list" role="main" aria-label="Tournament matches list"></div>
+
+                    <!-- Pagination Controls -->
+                    <div id="pagination-controls"
+                        style="display: none; justify-content: center; align-items: center; gap: 12px; margin-top: 24px; flex-wrap: wrap;">
+                    </div>
+                </main>
+            </div>
+
+            <!-- FOOTER SAVE BUTTON -->
+            <div class="footer-actions">
+                <button class="save-btn" onclick="KSSS_UI_HOOKS.saveToGitHub()"
+                    aria-label="Save all changes and publish to GitHub">💾 Save & Publish to GitHub</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CORRECTED SCRIPT TAG: now points to src/index.js -->
+    <script type="module" src="src/index.js?v=2.2.5"></script>
+</body>
+
+</html>

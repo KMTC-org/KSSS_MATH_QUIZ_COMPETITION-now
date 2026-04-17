@@ -17,7 +17,7 @@ const THEME_KEY       = "ksss-user-theme";
 const POLL_INTERVAL   = 30_000;              // poll every 30 seconds for live changes
 
 // Replace with your actual Netlify function URL after deploying
-const SURVEY_ENDPOINT = "https://YOUR-NETLIFY-SITE.netlify.app/.netlify/functions/survey";
+const SURVEY_ENDPOINT = "/.netlify/functions/survey-function";
 
 // ── Survey Questions ─────────────────────────────────────────
 const QUESTIONS = [
