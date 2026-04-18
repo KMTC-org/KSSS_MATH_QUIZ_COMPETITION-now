@@ -31,6 +31,6 @@ const repositoryConfig = resolveRepositoryConfig();
 export const CONFIG = {
     owner: repositoryConfig.owner,
     repo: repositoryConfig.repo,
-    version: "2.2.5",
+    version: "2.2.6",
     debug: false
 };
