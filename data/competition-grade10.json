@@ -156,9 +156,9 @@
           },
           "teamB": {
             "name": "Saffiah 1",
-            "points": null
+            "points": 20
           },
-          "winner": null
+          "winner": "Saffiah 1"
         }
       ]
     }
