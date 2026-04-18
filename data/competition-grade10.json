@@ -16,13 +16,13 @@
           },
           "teamA": {
             "name": "Zainab 1",
-            "points": 1
+            "points": 7
           },
           "teamB": {
             "name": "Umar 2 / Umar 3",
-            "points": 22
+            "points": 5
           },
-          "winner": "Umar 2 / Umar 3"
+          "winner": "Zainab 1"
         },
         {
           "id": 2,
@@ -37,7 +37,7 @@
           },
           "teamB": {
             "name": "Aisha 3",
-            "points": 23
+            "points": 25
           },
           "winner": "Aisha 3"
         },
@@ -71,7 +71,7 @@
           },
           "teamB": {
             "name": "Umar 1 / Bilal",
-            "points": 22
+            "points": 24
           },
           "winner": "Umar 1 / Bilal"
         },
@@ -139,7 +139,7 @@
           },
           "teamB": {
             "name": "Naffisah 1",
-            "points": 2
+            "points": 5
           },
           "winner": "Aisha 1 / Khadijah "
         },
