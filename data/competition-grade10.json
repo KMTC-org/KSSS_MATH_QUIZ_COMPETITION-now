@@ -16,13 +16,13 @@
           },
           "teamA": {
             "name": "Zainab 1",
-            "points": 7
+            "points": 0
           },
           "teamB": {
             "name": "Umar 2 / Umar 3",
-            "points": 5
+            "points": null
           },
-          "winner": "Zainab 1"
+          "winner": null
         },
         {
           "id": 2,
@@ -33,13 +33,13 @@
           },
           "teamA": {
             "name": "Ebrima",
-            "points": 20
+            "points": null
           },
           "teamB": {
             "name": "Aisha 3",
-            "points": 25
+            "points": null
           },
-          "winner": "Aisha 3"
+          "winner": null
         },
         {
           "id": 3,
@@ -50,13 +50,13 @@
           },
           "teamA": {
             "name": "Saffiah 1",
-            "points": 7
+            "points": null
           },
           "teamB": {
             "name": "Aisha 2",
-            "points": 17
+            "points": null
           },
-          "winner": "Aisha 2"
+          "winner": null
         },
         {
           "id": 4,
@@ -67,13 +67,13 @@
           },
           "teamA": {
             "name": "Ousman",
-            "points": 8
+            "points": null
           },
           "teamB": {
             "name": "Umar 1 / Bilal",
-            "points": 24
+            "points": null
           },
-          "winner": "Umar 1 / Bilal"
+          "winner": null
         },
         {
           "id": 5,
@@ -84,13 +84,13 @@
           },
           "teamA": {
             "name": "Ali",
-            "points": 10
+            "points": 0
           },
           "teamB": {
             "name": "Fatimah 2",
-            "points": 12
+            "points": null
           },
-          "winner": "Fatimah 2"
+          "winner": null
         },
         {
           "id": 6,
@@ -101,13 +101,13 @@
           },
           "teamA": {
             "name": "Hamza",
-            "points": 20
+            "points": null
           },
           "teamB": {
             "name": "Naffisah 2",
-            "points": 0
+            "points": null
           },
-          "winner": "Hamza"
+          "winner": null
         },
         {
           "id": 7,
@@ -118,13 +118,13 @@
           },
           "teamA": {
             "name": "Zainab 2",
-            "points": 20
+            "points": null
           },
           "teamB": {
             "name": "Roheyah",
-            "points": 0
+            "points": null
           },
-          "winner": "Zainab 2"
+          "winner": null
         },
         {
           "id": 8,
@@ -135,13 +135,13 @@
           },
           "teamA": {
             "name": "Aisha 1 / Khadijah ",
-            "points": 17
+            "points": null
           },
           "teamB": {
             "name": "Naffisah 1",
-            "points": 5
+            "points": null
           },
-          "winner": "Aisha 1 / Khadijah "
+          "winner": null
         },
         {
           "id": 9,
@@ -152,13 +152,13 @@
           },
           "teamA": {
             "name": "Fatimah 1",
-            "points": 1
+            "points": null
           },
           "teamB": {
             "name": "Saffiah 2",
-            "points": 20
+            "points": null
           },
-          "winner": "Saffiah 2"
+          "winner": null
         }
       ]
     }
