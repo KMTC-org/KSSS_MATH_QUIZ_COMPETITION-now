@@ -209,10 +209,10 @@ function matchCardHTML(m, opts) {
   return `
     <div class="match-card${isBestLoser ? " best-loser" : ""}">
       ${tags}
-      <div class="match-schedule">
-        <div class="sched-date">${sched.date || "Pending"}</div>
-        <div class="sched-time">${sched.time || "TBD"}</div>
-        <div class="sched-location">${sched.location || "Maths Lab"}</div>
+      <div class="match-schedule" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; width:100%; text-align:center; margin:0 0 12px 0;">
+        <div class="sched-date" style="margin:0; text-align:center; display:flex; justify-content:center; align-items:center;">${sched.date || "Pending"}</div>
+        <div class="sched-time" style="margin:0; text-align:center; display:flex; justify-content:center; align-items:center;">${sched.time || "TBD"}</div>
+        <div class="sched-location" style="margin:0; text-align:center; display:flex; justify-content:center; align-items:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${sched.location || "Maths Lab"}</div>
       </div>
       <div class="match-teams">
         <div class="${clsA}">
@@ -623,10 +623,10 @@ function initBracket() {
         return `
           <div class="match-card${isBL ? " best-loser" : ""}">
             ${roundBadge}
-            <div class="match-schedule">
-              <div class="sched-date">${sched.date || "Pending"}</div>
-              <div class="sched-time">${sched.time || "TBD"}</div>
-              <div class="sched-location">${sched.location || "Maths Lab"}</div>
+            <div class="match-schedule" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; width:100%; text-align:center; margin:0 0 12px 0;">
+              <div class="sched-date" style="margin:0; text-align:center; display:flex; justify-content:center; align-items:center;">${sched.date || "Pending"}</div>
+              <div class="sched-time" style="margin:0; text-align:center; display:flex; justify-content:center; align-items:center;">${sched.time || "TBD"}</div>
+              <div class="sched-location" style="margin:0; text-align:center; display:flex; justify-content:center; align-items:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${sched.location || "Maths Lab"}</div>
             </div>
             <div class="match-teams">
               <div class="${cA}">

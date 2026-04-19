@@ -631,45 +631,90 @@ function renderPanel() {
         case 'history':  body = renderHistory();  break;
     }
 
-    debugPanel.innerHTML = `
-        <div class="dp-title-bar" style="
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            padding:10px 14px;
-            border-bottom:1px solid #1e3a5f;
-            flex-shrink:0;
-            border-radius:14px 14px 0 0;
-        ">
-            <div style="display:flex;align-items:center;gap:8px;">
-                <span style="font-size:15px;">🐞</span>
-                <div>
-                    <div style="font-weight:700;color:#e2e8f0;font-size:12px;letter-spacing:0.03em;">Debug Console <span style="color:#334155;">v4.1</span></div>
-                    <div style="font-size:9px;color:${roleColor};font-weight:600;letter-spacing:0.06em;">${roleLabel}</div>
+    const existingWrap = document.getElementById('dp-tab-wrap');
+    if (!existingWrap) {
+        // First render — inject full shell
+        debugPanel.innerHTML = `
+            <div class="dp-title-bar" style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                padding:10px 14px;
+                border-bottom:1px solid #1e3a5f;
+                flex-shrink:0;
+                border-radius:14px 14px 0 0;
+            ">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:15px;">🐞</span>
+                    <div>
+                        <div style="font-weight:700;color:#e2e8f0;font-size:12px;letter-spacing:0.03em;">Debug Console <span style="color:#334155;">v4.3</span></div>
+                        <div style="font-size:9px;color:${roleColor};font-weight:600;letter-spacing:0.06em;">${roleLabel}</div>
+                    </div>
+                </div>
+                <div style="display:flex;gap:6px;align-items:center;">
+                    <span id="dp-err-badge">${errorCount > 0 ? `<span class="dp-badge red">${errorCount} ERR</span>` : ''}</span>
+                    <span class="dp-live-dot" title="Auto-refreshing every 2s"></span>
+                    <button
+                        onclick="document.getElementById('debug-panel').style.display='none'"
+                        style="background:transparent;color:#475569;border:none;cursor:pointer;font-size:18px;line-height:1;padding:0;transition:color 0.15s;"
+                        onmouseover="this.style.color='#e2e8f0'"
+                        onmouseout="this.style.color='#475569'"
+                    >✕</button>
                 </div>
             </div>
-            <div style="display:flex;gap:6px;align-items:center;">
-                ${errorCount > 0 ? `<span class="dp-badge red">${errorCount} ERR</span>` : ''}
-                <span class="dp-live-dot" title="Auto-refreshing every 2s"></span>
-                <button
-                    onclick="document.getElementById('debug-panel').style.display='none'"
-                    style="background:transparent;color:#475569;border:none;cursor:pointer;font-size:18px;line-height:1;padding:0;transition:color 0.15s;"
-                    onmouseover="this.style.color='#e2e8f0'"
-                    onmouseout="this.style.color='#475569'"
-                >✕</button>
-            </div>
-        </div>
-        <div id="dp-tab-wrap" style="display:flex;overflow-x:auto;overflow-y:hidden;padding:5px 6px;gap:3px;background:#0c1526;border-bottom:1px solid #1e293b;flex-shrink:0;-webkit-overflow-scrolling:touch;scrollbar-width:none;user-select:none;cursor:grab;">${tabBar}</div>
-        <div style="padding:12px 14px;overflow-y:auto;flex:1;">${body}</div>`;
+            <div id="dp-tab-wrap" style="display:flex;overflow-x:auto;overflow-y:hidden;padding:5px 6px;gap:3px;background:#0c1526;border-bottom:1px solid #1e293b;flex-shrink:0;-webkit-overflow-scrolling:touch;scrollbar-width:none;user-select:none;cursor:grab;">${tabBar}</div>
+            <div id="dp-content-body" style="padding:12px 14px;overflow-y:auto;flex:1;">${body}</div>`;
+
+        // Setup drag-to-scroll only once
+        requestAnimationFrame(() => {
+            const wrap = document.getElementById('dp-tab-wrap');
+            if (!wrap || wrap._dragBound) return;
+            wrap._dragBound = true;
+            let isDown = false, startX = 0, scrollLeft = 0;
+            wrap.addEventListener('mousedown', e => {
+                isDown = true;
+                wrap.style.cursor = 'grabbing';
+                startX = e.pageX - wrap.offsetLeft;
+                scrollLeft = wrap.scrollLeft;
+            });
+            wrap.addEventListener('mouseleave', () => { isDown = false; wrap.style.cursor = 'grab'; });
+            wrap.addEventListener('mouseup',    () => { isDown = false; wrap.style.cursor = 'grab'; });
+            wrap.addEventListener('mousemove',  e => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x    = e.pageX - wrap.offsetLeft;
+                const walk = (x - startX) * 1.5;
+                wrap.scrollLeft = scrollLeft - walk;
+            });
+        });
+
+    } else {
+        // Partial render on interval — only update data, keep scroll & events intact
+        const contentBody = document.getElementById('dp-content-body');
+        if (contentBody) contentBody.innerHTML = body;
+
+        const errBadge = document.getElementById('dp-err-badge');
+        if (errBadge) errBadge.innerHTML = errorCount > 0 ? `<span class="dp-badge red">${errorCount} ERR</span>` : '';
+
+        TAB_DEFS.forEach(t => {
+            const btn = document.getElementById(`dp-tab-${t.id}`);
+            if (btn) {
+                const isActive = currentTab === t.id;
+                btn.style.border = isActive ? '1px solid rgba(59,130,246,0.45)' : '1px solid transparent';
+                btn.style.background = isActive ? 'rgba(59,130,246,0.18)' : 'transparent';
+                btn.style.color = isActive ? '#60a5fa' : '#475569';
+            }
+        });
+    }
 
     // Wire up global callbacks
     window.__debugSelectTab = (tab) => {
         currentTab = tab;
         renderPanel();
-        // Auto-scroll active tab button into view
+        // Auto-scroll active tab into view strictly only on explicit click
         requestAnimationFrame(() => {
             const wrap = document.getElementById('dp-tab-wrap');
-            const active = wrap?.querySelector('.dp-tab-btn.active');
+            const active = document.getElementById(`dp-tab-${tab}`);
             if (active && wrap) {
                 const wrapRect   = wrap.getBoundingClientRect();
                 const btnRect    = active.getBoundingClientRect();
@@ -680,40 +725,6 @@ function renderPanel() {
     };
     window.__debugRunFullTest      = runFullTest;
     window.__debugTestFirebaseRead = testFirebaseRead;
-
-    // Drag-to-scroll on the tab bar
-    requestAnimationFrame(() => {
-        const wrap = document.getElementById('dp-tab-wrap');
-        if (!wrap || wrap._dragBound) return;
-        wrap._dragBound = true;
-        let isDown = false, startX = 0, scrollLeft = 0;
-        wrap.addEventListener('mousedown', e => {
-            isDown = true;
-            wrap.classList.add('dragging');
-            startX = e.pageX - wrap.offsetLeft;
-            scrollLeft = wrap.scrollLeft;
-        });
-        wrap.addEventListener('mouseleave', () => { isDown = false; wrap.classList.remove('dragging'); });
-        wrap.addEventListener('mouseup',    () => { isDown = false; wrap.classList.remove('dragging'); });
-        wrap.addEventListener('mousemove',  e => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x    = e.pageX - wrap.offsetLeft;
-            const walk = (x - startX) * 1.5;
-            wrap.scrollLeft = scrollLeft - walk;
-        });
-    });
-    // Scroll active tab into view on initial render
-    requestAnimationFrame(() => {
-        const wrap = document.getElementById('dp-tab-wrap');
-        const active = wrap?.querySelector('.dp-tab-btn.active');
-        if (active && wrap) {
-            const wrapRect = wrap.getBoundingClientRect();
-            const btnRect  = active.getBoundingClientRect();
-            const offset   = btnRect.left - wrapRect.left - (wrapRect.width / 2) + (btnRect.width / 2);
-            wrap.scrollBy({ left: offset, behavior: 'smooth' });
-        }
-    });
 }
 
 // ── Tests ─────────────────────────────────────────────────────────
