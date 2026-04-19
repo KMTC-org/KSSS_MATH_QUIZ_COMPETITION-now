@@ -43,11 +43,8 @@ export async function exportToPDF() {
     getImageDataURL(WATERMARK_IMAGE_URL)
   ]);
 
-  // Watermark element — using the dedicated watermark URL you requested
-  const watermarkHTML = watermarkDataURL
-    ? `<div class="watermark">
-         <img src="${watermarkDataURL}" alt="KMTC Watermark">
-       </div>`
+  const smallWatermarkHTML = watermarkDataURL
+    ? `<img src="${watermarkDataURL}" alt="KMTC Badge" class="header-watermark-badge">`
     : "";
 
   // ── Stats ────────────────────────────────────────────────────
@@ -121,32 +118,6 @@ export async function exportToPDF() {
       position: relative;
     }
 
-    /* ── Watermark ────────────────────────────────────────── */
-    .watermark {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.12;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-    .watermark img {
-      width: 70%;
-      max-width: 600px;
-      height: auto;
-      object-fit: contain;
-      /* Strip all colors — make it pure black and white */
-      filter: grayscale(100%) contrast(1.2);
-      -webkit-filter: grayscale(100%) contrast(1.2);
-    }
-
     /* ── Print Options (Hidden on Print) ──────────────────── */
     .print-options {
       background: #f8fafc;
@@ -198,17 +169,24 @@ export async function exportToPDF() {
       color: #0D1B5E;
       letter-spacing: 0.5px;
       text-transform: uppercase;
+      line-height: 1.1;
     }
     .header-text p {
       font-size: 11pt;
       color: #555;
-      margin-top: 2px;
+      margin-top: 4px;
+      line-height: 1.1;
     }
     .header-meta {
       text-align: right;
       font-size: 11pt;
       color: #555;
-      line-height: 1.8;
+      line-height: 1.6;
+    }
+    .header-watermark-badge {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
     }
     .header-meta .grade-badge {
       display: inline-block;
@@ -218,7 +196,6 @@ export async function exportToPDF() {
       border-radius: 20px;
       font-weight: 800;
       font-size: 11.5pt;
-      margin-bottom: 4px;
     }
 
     /* ── Navy rule ────────────────────────────────────────── */
@@ -357,15 +334,11 @@ export async function exportToPDF() {
 
     @media print {
       .print-btn, .print-options { display: none !important; }
-      .watermark  { position: fixed; }
       body { margin: 0; }
-      .round-section { page-break-inside: avoid; }
     }
   </style>
 </head>
 <body>
-  ${watermarkHTML}
-
   <button class="print-btn" onclick="window.print()">🖨️ Print Document</button>
 
   <div class="page-content">
@@ -387,8 +360,9 @@ export async function exportToPDF() {
         ${logoDataURL
           ? `<img src="${logoDataURL}" alt="KSSS Logo" class="header-logo">`
           : ""}
+        ${smallWatermarkHTML}
         <div class="header-text">
-          <h1>KMTC Maths &amp; Tech Club</h1>
+          <h1>KSSS Maths &amp; Tech Club (KMTC)</h1>
           <p>Kotu Senior Secondary School &middot; Mathematics Quiz Competition</p>
         </div>
       </div>
