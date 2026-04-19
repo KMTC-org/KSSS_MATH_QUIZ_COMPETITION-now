@@ -32,10 +32,19 @@ export const CONFIG = {
     owner: repositoryConfig.owner,
     repo: repositoryConfig.repo,
     version: "2.2.6",
-    // Debug: set via localStorage so you don't need to edit source code.
-    // To enable:  localStorage.setItem('ksss_debug', 'true')  then refresh.
-    // To disable: localStorage.removeItem('ksss_debug')  then refresh.
+    // Debug mode: set true here to enable, or toggle at runtime via:
+    //   localStorage.setItem('ksss_debug', 'true')  → then refresh to enable
+    //   localStorage.removeItem('ksss_debug')        → then refresh to disable
     get debug() {
-        try { return localStorage.getItem('ksss_debug') === 'true'; } catch { return false; }
+        try {
+            // Runtime toggle takes priority; hardcoded fallback = true
+            const stored = localStorage.getItem('ksss_debug');
+            if (stored === 'false') return false;
+            if (stored === 'true')  return true;
+            return true; // hardcoded ON — change to false to disable by default
+        } catch { return true; }
     }
 };
+
+// Expose to non-module scripts (e.g. the standalone debug bootstrapper in index.html)
+try { window._KSSS_DEBUG_FLAG = CONFIG.debug; } catch(e) {}

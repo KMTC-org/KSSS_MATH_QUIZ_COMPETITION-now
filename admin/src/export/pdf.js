@@ -121,21 +121,27 @@ export async function exportToPDF() {
     /* ── Watermark ────────────────────────────────────────── */
     .watermark {
       position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 500px;
-      height: 500px;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       pointer-events: none;
       z-index: 0;
-      opacity: 0.18; /* Increased drastically so it perfectly appears! */
+      opacity: 0.12;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
     .watermark img {
-      width: 100%;
-      height: 100%;
+      width: 70%;
+      max-width: 600px;
+      height: auto;
       object-fit: contain;
+      /* Strip all colors — make it pure black and white */
+      filter: grayscale(100%) contrast(1.2);
+      -webkit-filter: grayscale(100%) contrast(1.2);
     }
 
     /* ── Print Options (Hidden on Print) ──────────────────── */

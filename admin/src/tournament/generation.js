@@ -139,7 +139,7 @@ export async function finalizePairing(numMatches) {
         matches.push({
             id: i + 1,
             type: "normal",
-            schedule: { date: "Pending", time: "TBD", location: "Maths Lab" },
+            schedule: { date: "TBA", time: "TBA", location: "Maths Lab" },
             teamA: { name: teamA, points: null },
             teamB: { name: teamB, points: null },
             winner: null

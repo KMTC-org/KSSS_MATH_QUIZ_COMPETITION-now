@@ -334,7 +334,59 @@
     </div>
 
     <!-- CORRECTED SCRIPT TAG: now points to src/index.js -->
-    <script type="module" src="src/index.js?v=2.2.5"></script>
+    <script type="module" src="src/index.js?v=2.2.6"></script>
+
+    <!-- STANDALONE DEBUG BOOTSTRAPPER: runs first, independent of ES module loading -->
+    <!-- This guarantees the 🐞 bug icon always appears when CONFIG.debug = true     -->
+    <script>
+        (function() {
+            // Read debug setting directly — no import needed
+            const isDebug = (function() {
+                try {
+                    // Checks localStorage first (runtime toggle), then falls back to checking if
+                    // the page is being served from the admin section
+                    if (localStorage.getItem('ksss_debug') === 'true') return true;
+                    // Respect hardcoded debug:true in config.js by reading from module at module load
+                    // We hook into a global flag that index.js will set once CONFIG is read
+                    return window._KSSS_DEBUG_FLAG === true;
+                } catch { return false; }
+            })();
+
+            function mountDebugToggle() {
+                // Don't double-mount
+                if (document.getElementById('debug-toggle')) return;
+                // Check both localStorage and module flag
+                const enabled = (function() {
+                    try { return localStorage.getItem('ksss_debug') === 'true' || window._KSSS_DEBUG_FLAG === true; } catch { return false; }
+                })();
+                if (!enabled) return;
+
+                const btn = document.createElement('button');
+                btn.id = 'debug-toggle-shell';
+                btn.innerHTML = window.innerWidth <= 768 ? '🐞' : '🐞 Debug';
+                btn.title = 'Toggle debug panel';
+                btn.style.cssText = 'position:fixed;bottom:20px;left:20px;z-index:99999;background:#1e40af;color:#bfdbfe;border:1px solid #3b82f6;padding:6px 12px;border-radius:16px;font-weight:700;font-size:11px;cursor:pointer;box-shadow:0 4px 16px rgba(59,130,246,0.4);opacity:0.9;';
+                btn.onclick = function() {
+                    // Delegate to the real debug panel if loaded
+                    const realToggle = document.getElementById('debug-toggle');
+                    if (realToggle) { realToggle.click(); btn.remove(); }
+                    else { alert('Debug panel is loading. Please wait a moment and try again.'); }
+                };
+                document.body.appendChild(btn);
+            }
+
+            // Run on DOM ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', mountDebugToggle);
+            } else {
+                mountDebugToggle();
+            }
+
+            // Also retry after 500ms to catch the module flag being set
+            setTimeout(mountDebugToggle, 500);
+            setTimeout(mountDebugToggle, 1500);
+        })();
+    </script>
 </body>
 
 </html>

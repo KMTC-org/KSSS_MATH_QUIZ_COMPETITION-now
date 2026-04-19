@@ -64,6 +64,17 @@ export function updateScores(rIdx, mIdx, team, val) {
         if (m.teamA.points > m.teamB.points) m.winner = m.teamA.name;
         else if (m.teamB.points > m.teamA.points) m.winner = m.teamB.name;
         else m.winner = null;
+
+        // Auto-stamp today's date ONLY when a winner is set AND the field is still the generic placeholder
+        if (m.winner) {
+            const genericDates = ['TBA', 'TBD', 'Pending', '', null, undefined];
+            if (genericDates.includes(m.schedule?.date)) {
+                const today = new Date();
+                const formatted = today.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+                m.schedule.date = formatted; // e.g. "19 Apr 2026"
+            }
+            // Leave time alone — admin must enter it manually
+        }
     } else {
         m.winner = null;
     }
