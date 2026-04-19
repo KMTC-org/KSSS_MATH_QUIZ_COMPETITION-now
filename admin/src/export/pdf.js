@@ -73,7 +73,7 @@ export async function exportToPDF() {
     }).join("");
 
     return `
-      <div class="round-section">
+      <div class="round-section" id="rs-${rIdx}">
         <div class="round-header">
           <span class="round-name">${round.name}</span>
           <span class="round-status ${round.status === "locked" ? "locked" : "active"}">
@@ -102,7 +102,7 @@ export async function exportToPDF() {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>KMTC Math Quiz — Grade ${currentData.grade} Report</title>
+  <title>KSSS Math Quiz — Grade ${currentData.grade} Report</title>
   <style>
     /* ── Reset & page ─────────────────────────────────────── */
     @page { size: A4; margin: 1.8cm; }
@@ -124,17 +124,42 @@ export async function exportToPDF() {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 480px;
-      height: 480px;
+      width: 500px;
+      height: 500px;
       pointer-events: none;
       z-index: 0;
-      opacity: 0.07;
+      opacity: 0.18; /* Increased drastically so it perfectly appears! */
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
     .watermark img {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
+
+    /* ── Print Options (Hidden on Print) ──────────────────── */
+    .print-options {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
+    .print-options h3 { margin: 0; font-size: 14px; color: #0f172a; }
+    .round-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #334155;
+      cursor: pointer;
+    }
+    .round-toggle input { cursor: pointer; }
 
     /* ── All content sits above the watermark ─────────────── */
     .page-content { position: relative; z-index: 1; }
@@ -294,12 +319,11 @@ export async function exportToPDF() {
       font-weight: 600;
     }
 
-    /* ── Print button (hidden on print) ──────────────────── */
     .print-btn {
       position: fixed;
       top: 14px;
       right: 14px;
-      background: #0D1B5E;
+      background: #16a34a;
       color: white;
       padding: 10px 22px;
       border: none;
@@ -307,13 +331,13 @@ export async function exportToPDF() {
       cursor: pointer;
       font-weight: 700;
       font-size: 13px;
-      box-shadow: 0 4px 12px rgba(13,27,94,0.3);
+      box-shadow: 0 4px 12px rgba(22,163,74,0.3);
       z-index: 100;
     }
-    .print-btn:hover { background: #1a2f7a; }
+    .print-btn:hover { background: #15803d; }
 
     @media print {
-      .print-btn { display: none; }
+      .print-btn, .print-options { display: none !important; }
       .watermark  { position: fixed; }
       body { margin: 0; }
       .round-section { page-break-inside: avoid; }
@@ -323,9 +347,20 @@ export async function exportToPDF() {
 <body>
   ${watermarkHTML}
 
-  <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+  <button class="print-btn" onclick="window.print()">🖨️ Print Document</button>
 
   <div class="page-content">
+
+    <!-- Interactive Print Options -->
+    <div class="print-options no-print">
+      <h3>🖨️ Select Rounds to Print:</h3>
+      ${currentData.rounds.map((r, i) => `
+        <label class="round-toggle">
+          <input type="checkbox" checked onchange="document.getElementById('rs-${i}').style.display = this.checked ? 'block' : 'none';">
+          ${r.name}
+        </label>
+      `).join('')}
+    </div>
 
     <!-- Header -->
     <div class="doc-header">
@@ -382,7 +417,8 @@ export async function exportToPDF() {
   printWindow.document.close();
 
   printWindow.onload = () => {
-    setTimeout(() => printWindow.print(), 300);
+    // Instead of auto-printing instantly, we let them pick their rounds first!
+    // They can click the big green "Print Document" button when ready.
   };
 
   showStatus("✅ PDF report opened in new window", "#16a34a");
