@@ -22,7 +22,10 @@ function populateAdminDropdown() {
     // This ensures anyone who had credentials stored under the old system
     // still sees their name in the dropdown without needing to re-register.
     let registry = [];
-    try { registry = JSON.parse(localStorage.getItem("ksss_admin_registry") || "[]"); }
+    try { 
+        registry = JSON.parse(localStorage.getItem("ksss_admin_registry") || "[]"); 
+        if (!Array.isArray(registry)) registry = [];
+    }
     catch { registry = []; }
 
     let migrated = false;
@@ -30,7 +33,7 @@ function populateAdminDropdown() {
         const key = localStorage.key(i);
         if (key && key.startsWith("ksss_admin_cred_")) {
             const name = key.slice("ksss_admin_cred_".length);
-            if (name && !registry.includes(name)) {
+            if (name && Array.isArray(registry) && !registry.includes(name)) {
                 registry.push(name);
                 migrated = true;
             }
@@ -41,12 +44,14 @@ function populateAdminDropdown() {
     }
     // ──────────────────────────────────────────────────────────────────────────
 
-    registry.forEach(name => {
-        const opt = document.createElement("option");
-        opt.value       = name;
-        opt.textContent = name;
-        select.appendChild(opt);
-    });
+    if (Array.isArray(registry)) {
+        registry.forEach(name => {
+            const opt = document.createElement("option");
+            opt.value       = name;
+            opt.textContent = name;
+            select.appendChild(opt);
+        });
+    }
 
     // Always include the first-time option at the bottom
     const ftOpt = document.createElement("option");
