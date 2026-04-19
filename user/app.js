@@ -577,7 +577,15 @@ function initBracket() {
   const colorClasses = ["round-1","round-2","round-3","round-4","round-5","round-6"];
 
   /** Build and inject the round/match HTML from a data object */
+  window.__ksssActiveRoundIdx = window.__ksssActiveRoundIdx || 0;
+  window.__setActiveRoundIdx = (idx) => {
+    window.__ksssActiveRoundIdx = idx;
+    if (window.__lastBracketData) renderBracket(window.__lastBracketData, false);
+  };
+
+  /** Build and inject the round/match HTML from a data object */
   function renderBracket(data, isLiveUpdate) {
+    window.__lastBracketData = data;
     const rounds = Array.isArray(data.rounds) ? data.rounds : [];
 
     if (rounds.length === 0) {
@@ -589,9 +597,14 @@ function initBracket() {
       return;
     }
 
+    // Ensure active index is within bounds if data changed
+    if (window.__ksssActiveRoundIdx >= rounds.length) window.__ksssActiveRoundIdx = Math.max(0, rounds.length - 1);
+
     container.innerHTML = rounds.map((round, idx) => {
       const colorClass = colorClasses[(round.id ? round.id - 1 : idx) % colorClasses.length];
       const isLocked   = round.status === "locked";
+      const isFinal    = (round.name || "").toLowerCase().includes("final");
+      const isActive   = idx === window.__ksssActiveRoundIdx;
 
       const matches = [...(round.matches || [])].sort((a, b) => {
         const pa = isPending(a.schedule);
@@ -642,13 +655,22 @@ function initBracket() {
           </div>`;
       }).join("");
 
+      // Unique Final Round styling
+      const finaleStyle = isFinal ? `background: linear-gradient(135deg, rgba(234, 179, 8, 0.1), rgba(202, 138, 4, 0.2)); border: 2px solid #eab308; border-radius: 12px; padding: 10px; box-shadow: 0 0 20px rgba(234,179,8,0.2); margin-top: 20px;` : '';
+      const titleStyle = isFinal ? `color: #fef08a; text-shadow: 0 0 15px rgba(234,179,8,0.6); font-size: 1.4em; border: none; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; border-left: 6px solid #eab308; padding-left: 14px;` : '';
+
       return `
-        <div class="round-section ${colorClass}">
-          <div class="round-title">
-            ${round.name || "Round " + (round.id || idx + 1)}
-            ${isLocked ? " 🔒" : ""}
+        <div class="round-section ${colorClass}" style="${finaleStyle}">
+          <div class="round-title" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; ${titleStyle}" onclick="window.__setActiveRoundIdx(${idx})">
+            <span>
+              ${isFinal ? "🏆 " : ""}${round.name || "Round " + (round.id || idx + 1)}${isFinal ? " 🏆" : ""}
+              ${isLocked ? " <span style='font-size: 0.9em;'>🔒</span>" : ""}
+            </span>
+            <span style="opacity: 0.7; font-size: 14px; transition: transform 0.2s; display: inline-block; transform: ${isActive ? 'rotate(90deg)' : 'rotate(0deg)'}">▶</span>
           </div>
-          <div class="matches-grid">${cardElements}</div>
+          <div class="matches-grid" style="display: ${isActive ? 'grid' : 'none'}; padding-top: 15px;">
+            ${isActive ? cardElements : ''}
+          </div>
         </div>`;
     }).join("");
 
