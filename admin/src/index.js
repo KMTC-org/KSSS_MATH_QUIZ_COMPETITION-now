@@ -3,7 +3,6 @@ console.log("🚀 Starting KSSS Admin initialization...");
 import { ErrorHandler } from './utils/errorHandler.js';
 import { loadModules } from './bootstrap.js';
 import { store } from './core/store.js';
-import { initDebugPanel } from './debug.js';
 import { CONFIG } from './core/config.js';
 
 // Make store globally accessible for debugging
@@ -41,8 +40,11 @@ window.addEventListener('pageshow', (event) => {
 
 async function initializeApp() {
     try {
-        // Initialize debug panel FIRST so it is always visible even if modules fail below
-        initDebugPanel();
+        // Initialize debug panel dynamically so any failure in debug.js
+        // cannot block the rest of the app from loading
+        import('./debug.js').then(dbg => {
+            try { dbg.initDebugPanel(); } catch(e) { console.warn('Debug panel skipped:', e.message); }
+        }).catch(e => console.warn('debug.js failed to load:', e.message));
 
         // Phase 1: Core modules (must succeed)
         const core = await loadModules([
