@@ -60,14 +60,17 @@ export async function exportToPDF() {
   const roundSections = currentData.rounds.map((round, rIdx) => {
     const rows = round.matches.map(match => {
       const isPending = !match.winner || match.winner === "Pending";
+      const winA = match.winner === match.teamA.name;
+      const winB = match.winner === match.teamB.name;
+      
       return `
         <tr>
-          <td><strong>#${match.id}</strong>${match.type === "best_loser" ? " 🏆" : ""}</td>
-          <td>${match.teamA.name}</td>
-          <td class="score-cell">${match.teamA.points ?? "—"}</td>
-          <td>${match.teamB.name}</td>
-          <td class="score-cell">${match.teamB.points ?? "—"}</td>
-          <td class="${isPending ? "pending-cell" : "winner-cell"}">${match.winner ?? "Pending"}</td>
+          <td><strong>#${match.id}</strong>${match.type === "best_loser" ? " (Playoff)" : ""}</td>
+          <td class="${winA ? 'winner-highlight' : ''}">${match.teamA.name}</td>
+          <td class="score-cell ${winA ? 'winner-highlight' : ''}">${match.teamA.points ?? "—"}</td>
+          <td class="${winB ? 'winner-highlight' : ''}">${match.teamB.name}</td>
+          <td class="score-cell ${winB ? 'winner-highlight' : ''}">${match.teamB.points ?? "—"}</td>
+          <td class="${isPending ? "pending-cell" : "winner-cell"}">${isPending ? "Pending" : "🏆 " + match.winner}</td>
           <td class="schedule-cell">${match.schedule.date ?? "TBD"}${match.schedule.time ? "<br><small>" + match.schedule.time + "</small>" : ""}</td>
         </tr>`;
     }).join("");
@@ -105,13 +108,13 @@ export async function exportToPDF() {
   <title>KSSS Math Quiz — Grade ${currentData.grade} Report</title>
   <style>
     /* ── Reset & page ─────────────────────────────────────── */
-    @page { size: A4; margin: 1.8cm; }
+    @page { size: A4; margin: 1.2cm; }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
-      font-size: 10.5pt;
+      font-size: 12.5pt;
       line-height: 1.55;
       color: #1a1a1a;
       background: #fff;
@@ -156,16 +159,16 @@ export async function exportToPDF() {
       gap: 15px;
       align-items: center;
     }
-    .print-options h3 { margin: 0; font-size: 14px; color: #0f172a; }
+    .print-options h3 { margin: 0; font-size: 15px; color: #0f172a; }
     .round-toggle {
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 13px;
+      font-size: 15px;
       color: #334155;
       cursor: pointer;
     }
-    .round-toggle input { cursor: pointer; }
+    .round-toggle input { cursor: pointer; transform: scale(1.2); }
 
     /* ── All content sits above the watermark ─────────────── */
     .page-content { position: relative; z-index: 1; }
@@ -176,34 +179,34 @@ export async function exportToPDF() {
       align-items: center;
       justify-content: space-between;
       border-bottom: 3px solid #0D1B5E;
-      padding-bottom: 14px;
-      margin-bottom: 20px;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
     }
     .doc-header-left {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
     }
     .header-logo {
-      width: 56px;
-      height: 56px;
+      width: 64px;
+      height: 64px;
       object-fit: contain;
     }
     .header-text h1 {
-      font-size: 17pt;
+      font-size: 20pt;
       font-weight: 800;
       color: #0D1B5E;
       letter-spacing: 0.5px;
       text-transform: uppercase;
     }
     .header-text p {
-      font-size: 10pt;
+      font-size: 11pt;
       color: #555;
       margin-top: 2px;
     }
     .header-meta {
       text-align: right;
-      font-size: 9.5pt;
+      font-size: 11pt;
       color: #555;
       line-height: 1.8;
     }
@@ -211,10 +214,10 @@ export async function exportToPDF() {
       display: inline-block;
       background: #0D1B5E;
       color: #fff;
-      padding: 4px 14px;
+      padding: 5px 16px;
       border-radius: 20px;
-      font-weight: 700;
-      font-size: 10pt;
+      font-weight: 800;
+      font-size: 11.5pt;
       margin-bottom: 4px;
     }
 
@@ -222,40 +225,41 @@ export async function exportToPDF() {
     .navy-rule {
       border: none;
       border-top: 8px solid #0D1B5E;
-      margin: 0 0 20px 0;
+      margin: 0 0 24px 0;
     }
 
     /* ── Summary box ─────────────────────────────────────── */
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 24px;
+      gap: 16px;
+      margin-bottom: 28px;
     }
     .summary-card {
       border: 1.5px solid #CCCCCC;
       border-radius: 8px;
-      padding: 12px 10px;
+      padding: 14px 10px;
       text-align: center;
       background: #EEF0FB;
     }
     .summary-card .value {
-      font-size: 22pt;
+      font-size: 26pt;
       font-weight: 800;
       color: #0D1B5E;
       line-height: 1;
     }
     .summary-card .label {
-      font-size: 8.5pt;
+      font-size: 10pt;
       color: #555;
       text-transform: uppercase;
       letter-spacing: 0.4px;
-      margin-top: 4px;
+      margin-top: 6px;
+      font-weight: 700;
     }
 
     /* ── Round sections ───────────────────────────────────── */
     .round-section {
-      margin-bottom: 26px;
+      margin-bottom: 30px;
       page-break-inside: avoid;
     }
     .round-header {
@@ -264,15 +268,15 @@ export async function exportToPDF() {
       justify-content: space-between;
       background: #0D1B5E;
       color: #fff;
-      padding: 9px 14px;
+      padding: 12px 16px;
       border-radius: 6px 6px 0 0;
-      font-weight: 700;
-      font-size: 11pt;
+      font-weight: 800;
+      font-size: 13pt;
     }
     .round-status {
-      font-size: 9pt;
-      font-weight: 600;
-      padding: 2px 10px;
+      font-size: 10pt;
+      font-weight: 700;
+      padding: 3px 12px;
       border-radius: 12px;
     }
     .round-status.locked { background: rgba(255,255,255,0.15); }
@@ -282,31 +286,40 @@ export async function exportToPDF() {
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 9.5pt;
+      font-size: 11pt;
     }
     thead tr { background: #EEF0FB; }
     th {
-      padding: 7px 9px;
+      padding: 10px 12px;
       text-align: left;
       color: #0D1B5E;
-      font-weight: 700;
+      font-weight: 800;
       border: 1px solid #CCCCCC;
-      font-size: 9pt;
+      font-size: 10.5pt;
       text-transform: uppercase;
       letter-spacing: 0.3px;
     }
     td {
-      padding: 7px 9px;
+      padding: 10px 12px;
       border: 1px solid #CCCCCC;
       vertical-align: middle;
     }
-    tbody tr:nth-child(even) { background: #F5F5F5; }
+    tbody tr:nth-child(even) { background: #F8FAFC; }
     tbody tr:hover { background: #EEF0FB; }
 
     .score-cell    { text-align: center; font-weight: 700; color: #0D1B5E; }
-    .winner-cell   { font-weight: 700; color: #166534; }
-    .pending-cell  { color: #92400E; font-style: italic; }
-    .schedule-cell { font-size: 8.5pt; color: #555; }
+    
+    /* ── WINNER HIGHLIGHT ────────────────────────────────── */
+    .winner-highlight {
+      color: #15803d !important;
+      font-weight: 900 !important;
+      background: #dcfce7 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .winner-cell   { font-weight: 900; color: #15803d; font-size: 12pt; }
+    .pending-cell  { color: #92400E; font-style: italic; font-weight: 600; }
+    .schedule-cell { font-size: 10pt; color: #555; }
 
     /* ── Motto footer ─────────────────────────────────────── */
     .doc-footer {
