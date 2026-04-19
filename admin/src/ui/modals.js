@@ -373,112 +373,38 @@ export function closeStructuralLogModal() {
     if (backdrop) backdrop.remove();
 }
 
-// --- Critical Action Confirmation Modal (two-step) ---
-// MODIFIED: now accepts newRoundId and matchCount
+// --- Critical Action Confirmation Modal (simple, single-step) ---
 export function showCriticalActionModal(roundName, newRoundId, matchCount) {
     return new Promise((resolve) => {
-        // Step 1: Confirmation modal
-        const backdrop1 = document.createElement("div");
-        backdrop1.id = "critical-backdrop-1";
-        backdrop1.style.cssText = "position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 3050;";
+        const backdrop = document.createElement("div");
+        backdrop.id = "critical-backdrop-1";
+        backdrop.style.cssText = "position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 3050;";
 
-        const modal1 = document.createElement("div");
-        modal1.id = "critical-modal-1";
-        modal1.style.cssText = "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card-bg); color: var(--text-main); padding: 30px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); z-index: 3051; max-width: 500px; width: 90%; border: 1px solid var(--border-color); text-align: center;";
+        const modal = document.createElement("div");
+        modal.id = "critical-modal-1";
+        modal.style.cssText = "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card-bg); color: var(--text-main); padding: 28px 24px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); z-index: 3051; max-width: 420px; width: 90%; border: 2px solid var(--border-color); text-align: center;";
 
-        modal1.innerHTML = `
-            <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
-            <h3 style="margin: 0 0 15px 0; color: var(--primary);">CRITICAL ACTION</h3>
-            <div style="font-size: 15px; margin-bottom: 20px; color: var(--text-muted); line-height: 1.5; text-align: left;">
-                <p>This will:</p>
-                <ul style="text-align: left; margin-left: 20px;">
-                    <li><strong>LOCK ${roundName}</strong> (cannot be edited after)</li>
-                    <li>Create Round ${newRoundId} with ${matchCount} matches</li>
-                </ul>
-                <p>Are you absolutely sure you want to proceed?</p>
+        modal.innerHTML = `
+            <div style="font-size: 40px; margin-bottom: 12px;">⚠️</div>
+            <h3 style="margin: 0 0 12px 0; color: var(--primary); font-size: 16px;">Confirm Round Generation</h3>
+            <div style="font-size: 13px; margin-bottom: 20px; color: var(--text-muted); line-height: 1.6; text-align: left; background: var(--active-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--active-border);">
+                <div>🔒 <strong>${roundName}</strong> will be <strong>locked</strong> (no further edits)</div>
+                <div>➕ <strong>Round ${newRoundId}</strong> will be created with <strong>${matchCount} matches</strong></div>
             </div>
-            <div style="display: flex; gap: 12px; justify-content: center;">
-                <button id="critical-ok-1" style="flex:1; background: var(--primary); color:white; border:none; padding:12px 0; border-radius:8px; font-weight:bold; cursor:pointer;">OK</button>
-                <button id="critical-cancel-1" style="flex:1; background: var(--danger); color:white; border:none; padding:12px 0; border-radius:8px; font-weight:bold; cursor:pointer;">Cancel</button>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button id="critical-ok-1" style="flex:1; background: var(--success); color:white; border:none; padding:11px 0; border-radius:8px; font-weight:700; cursor:pointer; font-size:14px;">✅ Yes, Create Round</button>
+                <button id="critical-cancel-1" style="flex:1; background: var(--danger); color:white; border:none; padding:11px 0; border-radius:8px; font-weight:700; cursor:pointer; font-size:14px;">❌ Cancel</button>
             </div>
         `;
 
-        document.body.appendChild(backdrop1);
-        document.body.appendChild(modal1);
+        document.body.appendChild(backdrop);
+        document.body.appendChild(modal);
 
-        const cleanup1 = () => {
-            modal1.remove();
-            backdrop1.remove();
-        };
+        const cleanup = () => { modal.remove(); backdrop.remove(); };
 
-        document.getElementById("critical-ok-1").onclick = () => {
-            cleanup1();
-            // Step 2: Typing confirmation modal
-            const backdrop2 = document.createElement("div");
-            backdrop2.id = "critical-backdrop-2";
-            backdrop2.style.cssText = "position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 3060;";
-
-            const modal2 = document.createElement("div");
-            modal2.id = "critical-modal-2";
-            modal2.style.cssText = "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card-bg); color: var(--text-main); padding: 30px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); z-index: 3061; max-width: 400px; width: 90%; border: 1px solid var(--border-color); text-align: center;";
-
-            modal2.innerHTML = `
-                <div style="font-size: 32px; margin-bottom: 16px;">🔐</div>
-                <h3 style="margin: 0 0 15px 0; color: var(--primary);">Final Confirmation</h3>
-                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 15px;">Type <strong>CONFIRM</strong> (all caps) to lock ${roundName} and create the new round:</p>
-                <input type="text" id="critical-confirm-input" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 2px solid var(--border-color); border-radius: 6px; background: var(--input-bg); color: var(--text-main);" placeholder="CONFIRM">
-                <div style="display: flex; gap: 10px;">
-                    <button id="critical-confirm-btn" style="flex:1; background: var(--success); color:white; border:none; padding:8px 0; border-radius:6px; cursor:pointer;">Confirm</button>
-                    <button id="critical-cancel-2" style="flex:1; background: var(--locked-bg); color:var(--text-muted); border:1px solid var(--border-color); padding:8px 0; border-radius:6px; cursor:pointer;">Cancel</button>
-                </div>
-            `;
-
-            document.body.appendChild(backdrop2);
-            document.body.appendChild(modal2);
-
-            const cleanup2 = () => {
-                modal2.remove();
-                backdrop2.remove();
-            };
-
-            const input = document.getElementById("critical-confirm-input");
-            const confirmBtn = document.getElementById("critical-confirm-btn");
-            const cancelBtn = document.getElementById("critical-cancel-2");
-
-            const submit = () => {
-                const typed = input.value.trim();
-                cleanup2();
-                resolve(typed === "CONFIRM");
-            };
-
-            confirmBtn.onclick = submit;
-            cancelBtn.onclick = () => {
-                cleanup2();
-                resolve(false);
-            };
-            input.onkeydown = (e) => {
-                if (e.key === "Enter") submit();
-                if (e.key === "Escape") {
-                    cleanup2();
-                    resolve(false);
-                }
-            };
-            backdrop2.onclick = () => {
-                cleanup2();
-                resolve(false);
-            };
-
-            input.focus();
-        };
-
-        document.getElementById("critical-cancel-1").onclick = () => {
-            cleanup1();
-            resolve(false);
-        };
-        backdrop1.onclick = () => {
-            cleanup1();
-            resolve(false);
-        };
+        document.getElementById("critical-ok-1").onclick     = () => { cleanup(); resolve(true); };
+        document.getElementById("critical-cancel-1").onclick = () => { cleanup(); resolve(false); };
+        backdrop.onclick = () => { cleanup(); resolve(false); };
     });
 }
 

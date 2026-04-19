@@ -88,65 +88,38 @@ function generateTeamOptions() {
 function updatePairingDropdowns() {
     const allSelects = Array.from(document.querySelectorAll('[id^="match-"]'));
     if (!allSelects.length) return;
-    const selectedTeams = new Set();
+
+    // Collect all currently selected teams across ALL dropdowns
+    const selectedMap = new Map(); // selectId -> selectedValue
     allSelects.forEach(select => {
-        if (select && select.value && select.value !== "") {
-            selectedTeams.add(select.value);
-        }
+        if (select && select.value) selectedMap.set(select.id, select.value);
     });
+
+    // For each dropdown, rebuild its options to EXCLUDE teams picked by OTHER dropdowns
     allSelects.forEach(currentSelect => {
-        if (!currentSelect || !currentSelect.options) return;
-        const currentValue = currentSelect.value;
-        Array.from(currentSelect.options).forEach(option => {
-            if (!option) return;
-            const optionValue = option.value;
-            if (optionValue === "" || optionValue === "-- Select Team --") {
-                option.disabled = false;
-                option.style.color = '';
-                option.style.backgroundColor = '';
-                return;
-            }
-            if (selectedTeams.has(optionValue) && optionValue !== currentValue) {
-                option.disabled = true;
-                option.style.color = '#9ca3af';
-                option.style.backgroundColor = '#f3f4f6';
-            } else {
-                option.disabled = false;
-                option.style.color = '';
-                option.style.backgroundColor = '';
-            }
+        if (!currentSelect) return;
+        const myId = currentSelect.id;
+        const myValue = currentSelect.value;
+
+        // Teams taken by OTHER selects
+        const takenByOthers = new Set();
+        selectedMap.forEach((val, id) => {
+            if (id !== myId && val) takenByOthers.add(val);
         });
+
+        // Rebuild options: keep placeholder + teams not taken by others
+        const placeholder = `<option value="">-- Select Team --</option>`;
+        const teamOpts = pairingState.teams
+            .filter(team => !takenByOthers.has(team) || team === myValue)
+            .map(team => `<option value="${team}" ${team === myValue ? 'selected' : ''}>${team}</option>`)
+            .join('');
+
+        currentSelect.innerHTML = placeholder + teamOpts;
     });
-    allSelects.forEach(select => {
-        if (!select || !select.id) return;
-        const match = select.id.match(/^match-(\d+)-([ab])$/);
-        if (!match) return;
-        const idx = match[1];
-        const slot = match[2];
-        const selectA = document.getElementById(`match-${idx}-a`);
-        const selectB = document.getElementById(`match-${idx}-b`);
-        if (!selectA || !selectB) return;
-        const teamA = selectA.value;
-        const teamB = selectB.value;
-        if (teamA && teamA !== "") {
-            Array.from(selectB.options).forEach(opt => {
-                if (opt && opt.value === teamA && opt.value !== "") {
-                    opt.disabled = true;
-                    opt.style.color = '#9ca3af';
-                    opt.style.backgroundColor = '#f3f4f6';
-                }
-            });
-        }
-        if (teamB && teamB !== "") {
-            Array.from(selectA.options).forEach(opt => {
-                if (opt && opt.value === teamB && opt.value !== "") {
-                    opt.disabled = true;
-                    opt.style.color = '#9ca3af';
-                    opt.style.backgroundColor = '#f3f4f6';
-                }
-            });
-        }
-    });
+
+    // Track used teams
+    const selectedTeams = new Set();
+    allSelects.forEach(s => { if (s && s.value) selectedTeams.add(s.value); });
     pairingState.usedTeams = selectedTeams;
 }
 

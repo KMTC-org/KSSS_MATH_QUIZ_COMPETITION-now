@@ -7,6 +7,14 @@ let debugPanel = null;
 let debugToggle = null;
 let currentTab = 'overview';
 
+// Auto-boot: initialize when DOM is ready, regardless of what happens in index.js
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => initDebugPanel());
+} else {
+    // DOM already ready — run immediately
+    setTimeout(() => initDebugPanel(), 0);
+}
+
 const TAB_DEFS = [
     { id: 'overview',   label: '📊 Overview'  },
     { id: 'hooks',      label: '🪝 Hooks'     },
