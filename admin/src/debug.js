@@ -36,22 +36,37 @@ function injectStyles() {
         .dp-content::-webkit-scrollbar { width: 4px; }
         .dp-content::-webkit-scrollbar-track { background: transparent; }
         .dp-content::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
-        .dp-tab-btn {
+        .dp-tab-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+            padding: 8px 10px;
+            background: #0c1526;
+            border-bottom: 1px solid #1e293b;
             flex-shrink: 0;
+        }
+        .dp-tab-btn {
             background: transparent;
             color: #475569;
-            border: none;
-            border-bottom: 2px solid transparent;
-            padding: 8px 10px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            padding: 5px 4px;
             cursor: pointer;
-            font-size: 11px;
-            font-weight: 700;
+            font-size: 10px;
+            font-weight: 600;
             white-space: nowrap;
-            transition: color 0.15s, border-color 0.15s;
-            letter-spacing: 0.03em;
+            transition: all 0.15s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            line-height: 1;
+            font-family: inherit;
         }
-        .dp-tab-btn:hover { color: #94a3b8; }
-        .dp-tab-btn.active { color: #60a5fa; border-bottom-color: #3b82f6; }
+        .dp-tab-btn .dp-tab-icon { font-size: 14px; }
+        .dp-tab-btn .dp-tab-lbl  { font-size: 9px; letter-spacing: 0.04em; text-transform: uppercase; }
+        .dp-tab-btn:hover  { background: #1e293b; color: #94a3b8; border-color: #334155; }
+        .dp-tab-btn.active { background: rgba(59,130,246,0.15); color: #60a5fa; border-color: rgba(59,130,246,0.4); }
         .dp-row {
             display: flex;
             align-items: flex-start;
@@ -571,7 +586,8 @@ function renderPanel() {
             class="dp-tab-btn ${currentTab === t.id ? 'active' : ''}"
             onclick="window.__debugSelectTab('${t.id}')"
             title="${t.title}">
-            ${t.label} ${t.title}
+            <span class="dp-tab-icon">${t.label}</span>
+            <span class="dp-tab-lbl">${t.title}</span>
         </button>`).join('');
 
     let body = '';
@@ -599,7 +615,7 @@ function renderPanel() {
             <div style="display:flex;align-items:center;gap:8px;">
                 <span style="font-size:15px;">🐞</span>
                 <div>
-                    <div style="font-weight:700;color:#e2e8f0;font-size:12px;letter-spacing:0.03em;">Debug Console <span style="color:#334155;">v4.0</span></div>
+                    <div style="font-weight:700;color:#e2e8f0;font-size:12px;letter-spacing:0.03em;">Debug Console <span style="color:#334155;">v4.1</span></div>
                     <div style="font-size:9px;color:${roleColor};font-weight:600;letter-spacing:0.06em;">${roleLabel}</div>
                 </div>
             </div>
@@ -614,9 +630,7 @@ function renderPanel() {
                 >✕</button>
             </div>
         </div>
-        <div class="dp-tab-scroll" style="display:flex;overflow-x:auto;border-bottom:1px solid #1e293b;background:#0c1526;flex-shrink:0;">
-            ${tabBar}
-        </div>
+        <div class="dp-tab-grid">${tabBar}</div>
         <div class="dp-content" style="padding:12px 14px;overflow-y:auto;flex:1;">${body}</div>`;
 
     // Wire up global callbacks
