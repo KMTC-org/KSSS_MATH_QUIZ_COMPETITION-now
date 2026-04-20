@@ -21,13 +21,19 @@
   <div class="survey-wrap">
 
     <!-- Survey Header -->
-    <div class="survey-header">
-      <h1>👋 Welcome to KSSS MTC</h1>
-      <p>Before you continue, please answer a few quick questions to help us understand our community.</p>
-      <div class="progress-bar-wrap">
+    <div class="survey-header" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+      <div style="display: flex; gap: 18px; margin-bottom: 20px; align-items: center; justify-content: center;">
+        <img src="static/images/Kotu-sss_logo.png" alt="KSSS Logo" style="width: 75px; height: 75px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+        <img src="static/images/KMTC.webp" alt="KMTC Badge" style="width: 75px; height: 75px; object-fit: contain; border-radius: 50%; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <h1 style="font-size: 1.9rem; margin-bottom: 10px; font-weight: 800; letter-spacing: -0.5px;">👋 Welcome to KMTC</h1>
+      <p style="color: var(--muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 26px;">
+        Before diving into the live mathematics competition, please answer a few quick questions to help us understand our amazing Kotu SSS tech community!
+      </p>
+      <div class="progress-bar-wrap" style="width: 100%;">
         <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
       </div>
-      <p class="progress-label" id="progress-label">Question 1 of 7</p>
+      <p class="progress-label" id="progress-label" style="text-align: center; width: 100%; font-weight: 600;">Question 1 of 5</p>
     </div>
 
     <!-- Survey Form -->

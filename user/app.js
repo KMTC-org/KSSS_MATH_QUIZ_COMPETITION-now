@@ -22,67 +22,50 @@ const SURVEY_ENDPOINT = "https://ksss-math-quiz-competition.netlify.app/.netlify
 // ── Survey Questions ─────────────────────────────────────────
 const QUESTIONS = [
   {
-    text: "Are you a student at Kotu Senior Secondary School?",
+    text: "Which academic track at Kotu Senior Secondary School (KSSS) are you representing or supporting today?",
     options: [
-      "Yes, I am a current student",
-      "I am a teacher or staff member",
-      "I am a parent or guardian",
-      "I am from another school",
-      "Other"
+      "Science Track 🔬",
+      "Commerce / Arts Track 📚",
+      "Technical / IT Track 💻",
+      "Teacher / Staff Member 🧑‍🏫",
+      "Special Guest / Supporter 👋"
     ]
   },
   {
-    text: "Were you already aware of the KSSS Maths & Tech Club before visiting this site?",
+    text: "The Kotu Mathematics & Tech Club (KMTC) engineers built this live-scoring platform completely from scratch! How do you rate our tech team?",
     options: [
-      "Yes, I know the club well",
-      "I have heard of it but do not know much",
-      "No, this is my first time hearing about it"
+      "Extremely Impressed! KMTC is leading the way. 🔥",
+      "Very impressed, the platform feels premium and interactive.",
+      "It is good, but I expect nothing less from KSSS students.",
+      "I am just here to focus on the mathematics competition."
     ]
   },
   {
-    text: "How did you find out about this website?",
+    text: "When it comes to the intersection of Math and Tech, where do your passions lie?",
     options: [
-      "A club member told me",
-      "A teacher or staff member mentioned it",
-      "I saw it shared online or on social media",
-      "I searched for it myself",
-      "Other"
+      "Pure Mathematics and Complex Problem Solving 📐",
+      "Software Engineering, Coding & Web Development ⌨️",
+      "Hardware, Robotics & Engineering 🤖",
+      "All of the above! I love STEM. 🌟",
+      "I'm just trying to pass my final exams... 😅"
     ]
   },
   {
-    text: "Did you know the club designs and builds real software used in the school?",
+    text: "Are you planning to officially join KMTC and help us build the next generation of KSSS tech projects?",
     options: [
-      "Yes, I already knew that",
-      "I suspected it but was not sure",
-      "No, I did not know that"
+      "Yes, absolutely! Where do I sign up?",
+      "I am already a proud and active member of KMTC.",
+      "I would love to, but I am worried about the time commitment.",
+      "I will support the club proudly from the sidelines."
     ]
   },
   {
-    text: "Have you ever followed or participated in the KSSS Math Quiz Competition?",
+    text: "How would you describe the atmosphere of today's KSSS Mathematics Quiz Competition?",
     options: [
-      "Yes, I competed in it",
-      "Yes, I followed it as a spectator",
-      "I heard about it but did not follow it",
-      "No, this is my first time hearing about it"
-    ]
-  },
-  {
-    text: "How interested are you in joining or supporting the club?",
-    options: [
-      "Very interested — I want to join",
-      "Somewhat interested — I want to know more",
-      "I support it but do not want to join",
-      "Not interested"
-    ]
-  },
-  {
-    text: "What would you most like to see from the club?",
-    options: [
-      "More mathematics competitions",
-      "More technology projects and apps",
-      "Workshops and training sessions",
-      "Community and school outreach",
-      "All of the above"
+      "Electrifying! The crowd energy is unmatched. ⚡",
+      "Intense, brain-cracking, and highly competitive. 🧠",
+      "Educational, well-organized, and engaging.",
+      "I just arrived, but I am excited to see who wins!"
     ]
   }
 ];
